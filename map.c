@@ -1,42 +1,41 @@
 #include "conquer.h"
-#include <stdlib.h> // Srand, rand 
-#include <time.h> // Time 
 
-Piece map[MAP_HEIGHT + 2][MAP_WIDTH + 2];
-Piece tempMap[MAP_HEIGHT + 2][MAP_WIDTH + 2];
-
-Piece land = {LAND, "land", true, '#', COLOR_GREEN};
-Piece water = {WATER, "water", true, '.', COLOR_CYAN};
+Tile map[MAP_HEIGHT + 2][MAP_WIDTH + 2];
+Tile tempMap[MAP_HEIGHT + 2][MAP_WIDTH + 2];
 
 void genMap(double percentLand, int smoothness){
-    srand(time(0));
-    forEveryTile(MAP_HEIGHT + 2, MAP_WIDTH + 2,
-        map[i][j] = water;
-        tempMap[i][j] = water;
+
+    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+       map[i][j].piece = air;
+    )
+
+    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+        map[i][j].terrain = WATER;
+        tempMap[i][j].terrain = WATER;
     )
     for(int i = 0; i < (int)(MAP_HEIGHT * MAP_WIDTH * percentLand); i++){
-        map[(rand() % MAP_HEIGHT) + 1][(rand() % MAP_WIDTH) + 1] = land;
+        map[irand(MAP_HEIGHT - 2) + 1][irand(MAP_WIDTH - 2) + 1].terrain = LAND;
     }
 
     for(int s = 0; s < smoothness; s++){
-        forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+        forEveryTile(MAP_HEIGHT - 2, MAP_WIDTH - 2,
             int neighbors = 0;
-            neighbors+=map[i+2][j+2].id;
-            neighbors+=map[i+2][j+1].id;
-            neighbors+=map[i+2][j].id;
-            neighbors+=map[i+1][j+2].id;
-            neighbors+=map[i+1][j].id;
-            neighbors+=map[i][j+2].id;
-            neighbors+=map[i][j+1].id;
-            neighbors+=map[i][j].id;
+            neighbors+=map[i+2][j+2].terrain;
+            neighbors+=map[i+2][j+1].terrain;
+            neighbors+=map[i+2][j].terrain;
+            neighbors+=map[i+1][j+2].terrain;
+            neighbors+=map[i+1][j].terrain;
+            neighbors+=map[i][j+2].terrain;
+            neighbors+=map[i][j+1].terrain;
+            neighbors+=map[i][j].terrain;
             if(neighbors < 4){
-                tempMap[i+1][j+1] = water;
+                tempMap[i+1][j+1].terrain = WATER;
             } else if(neighbors > 3){
-                tempMap[i+1][j+1] = land;
+                tempMap[i+1][j+1].terrain = LAND;
             }
         )
         forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-            map[i][j] = tempMap[i][j];
+            map[i][j].terrain = tempMap[i][j].terrain;
         )
     }
 }

@@ -1,18 +1,5 @@
 #include "conquer.h"
 
-
-// Set up terminal with ncurses library
-void initNcurses(){
-    // Init curses
-    initscr(); 
-    // Disable buffering and get one character-at-a-time input
-    cbreak(); 
-    // Suppress echoing of typed keys
-    noecho();
-    // Hide cursor
-    curs_set(0);
-}
-
 void initColor(){
     // Alow the use of color
     use_default_colors();
@@ -27,24 +14,48 @@ void initColor(){
     init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
 }
 
+// Set up terminal with ncurses library
+void initNcurses(){
+    // Init curses
+    initscr(); 
+    // Disable buffering and get one character-at-a-time input
+    cbreak(); 
+    // Get Special keys
+    keypad(stdscr, TRUE);
+    // Suppress echoing of typed keys
+    noecho();
+    // Hide cursor
+    curs_set(0);
+    initColor();
+}
+
 void initGame(){
+    initrand();
     genMap(0.5, 4);
-    //printMap();
+    printMap();
+}
+
+void gameLoop(){
+    while(true){
+        doCommand();
+        printMap();
+    }
 }
 
 int main(){
     initNcurses();
-    initColor();
     
     initGame();
-    getch();
-    clear();
+    gameLoop();
+    igetch();
+    
+    /*clear();
     int currentX = 0;
     int currentY = 0;
     int input = 0;
     while(input != 81){
-        printVeiw(currentY, currentX, 20, 80);
-        input = getch();
+        printView(currentY, currentX, VEIW_HEIGHT, VEIW_WIDTH);
+        input = igetch();
         if (input == 'w' && currentY != 0){
             currentY--;
         } else if(input == 's' && currentY != MAP_HEIGHT - VEIW_HEIGHT){
@@ -54,7 +65,7 @@ int main(){
         } else if(input == 'd' && currentX != MAP_WIDTH - VEIW_WIDTH){
             currentX++;
         }
-    }
+    }*/
 
     // Reset terminal
     endwin();
