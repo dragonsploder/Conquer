@@ -7,6 +7,13 @@
 #define KEY_ENTER 10
 
 #define PLAYER_COLOR COLOR_CYAN
+#define COMPUTER_COLOR COLOR_RED
+
+#define TROOPS_PER_TURN 50
+
+#define MAX_TROOPS_IN_TILE 1000
+
+#define TROOPS_FOR_CITY 800
 
 /* Misc Deff */
 #define NONE 0
@@ -54,6 +61,10 @@ typedef struct Piece {
     char tile;
     int color;
     int owner;
+    int playerTroops;
+    int newPlayerTroops;
+    int computerTroops;
+    int newComputerTroops;
 } Piece;
 
 typedef struct Tile {
@@ -62,7 +73,7 @@ typedef struct Tile {
 } Tile;
 
 // Tile definitions
-extern Piece air;
+extern Piece pieceTypes[];
 extern Terrain terrainTypes[];
 
 // Map definitions

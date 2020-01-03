@@ -7,6 +7,9 @@ void initrand(){
 }
 
 int irand(int high){
+    if (high == 0){
+        return 0;
+    }
 	return (rand() % high);
 }
 

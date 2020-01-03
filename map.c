@@ -6,7 +6,7 @@ Tile tempMap[MAP_HEIGHT + 2][MAP_WIDTH + 2];
 void genMap(double percentLand, int smoothness){
 
     forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-       map[i][j].piece = air;
+       map[i][j].piece = pieceTypes[AIR];
     )
 
     forEveryTile(MAP_HEIGHT, MAP_WIDTH,

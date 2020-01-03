@@ -35,9 +35,49 @@ void initGame(){
     printMap();
 }
 
+
+void justify(){
+    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+        if (map[i][j].piece.id == CITY){
+            map[i][j].piece.newPlayerTroops+=TROOPS_PER_TURN;
+        }
+    )
+    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+        if (map[i][j].terrain == LAND && map[i][j].piece.playerTroops > 0){
+            for (int c = 0; c < 9; c++){
+                int troopsToMove = irand(map[i][j].piece.playerTroops);
+                /*
+                Piece *moveCity = &map[i + (irand(3) - 1)][j + (irand(3) - 1)].piece;
+                if(moveCity->playerTroops + troopsToMove <= MAX_TROOPS_IN_TILE){
+                    moveCity->newPlayerTroops += troopsToMove;
+                    map[i][j].piece.playerTroops -= troopsToMove;
+                }*/
+                //Location offset = {(irand(3) - 1), (irand(3) - 1)};
+                Location cityOffset;
+                cityOffset.y = (irand(3) - 1);
+                cityOffset.x = (irand(3) - 1);
+                if (map[i + cityOffset.y][j + cityOffset.x].terrain == LAND && map[i + cityOffset.y][j + cityOffset.x].piece.playerTroops + troopsToMove <= MAX_TROOPS_IN_TILE){
+                    map[i + cityOffset.y][j + cityOffset.x].piece.newPlayerTroops += troopsToMove;
+                    map[i][j].piece.playerTroops -= troopsToMove;
+                }
+            }
+        }
+    )
+    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+        map[i][j].piece.playerTroops += map[i][j].piece.newPlayerTroops;
+        map[i][j].piece.newPlayerTroops = 0;
+        if (map[i][j].piece.playerTroops > MAX_TROOPS_IN_TILE){
+            map[i][j].piece.playerTroops = MAX_TROOPS_IN_TILE;
+        }
+    )
+}
+
 void gameLoop(){
+    map[irand(MAP_HEIGHT)][irand(MAP_WIDTH)].piece = pieceTypes[CITY];
     while(true){
-        doCommand();
+        //doCommand();
+        getch();
+        justify();
         printMap();
     }
 }
