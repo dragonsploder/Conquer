@@ -22,13 +22,13 @@ Location getLocation(int startY, int startX, bool info){
     }
     return curserLocation;
 }
-
+/*
 void makeCity(Location cityLocation){
     map[cityLocation.y][cityLocation.x].piece.id = CITY;
     map[cityLocation.y][cityLocation.x].piece.color = PLAYER_COLOR;
     map[cityLocation.y][cityLocation.x].piece.owner = PLAYER;
     map[cityLocation.y][cityLocation.x].piece.tile = 'O';
-}
+}*/
 
 void info(){
     getLocation(1, 1, true);

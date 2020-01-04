@@ -15,6 +15,8 @@
 
 #define TROOPS_FOR_CITY 800
 
+#define MIN_TROOP_MOVE 10
+
 /* Misc Deff */
 #define NONE 0
 #define PLAYER 1
@@ -45,32 +47,33 @@
 // Macro to do x to every tile
 #define forEveryTile(height, width, x) for(int i = 0; i < height; i++){for(int j = 0; j < width; j++){x}}
 
-typedef struct Location {
+struct Location {
     int y;
     int x;
-} Location;
+};
 
-typedef struct Terrain {
+struct Terrain {
     int id;
     char tile;
     int color;
-} Terrain;
+};
 
-typedef struct Piece {
+struct Piece {
     int id;
     char tile;
-    int color;
     int owner;
-    int playerTroops;
-    int newPlayerTroops;
-    int computerTroops;
-    int newComputerTroops;
-} Piece;
+    int playerTroops = 0;
+    int newPlayerTroops = 0;
+    int computerTroops = 0;
+    int newComputerTroops = 0;
+};
 
-typedef struct Tile {
+struct Tile {
     int terrain;
     Piece piece;
-} Tile;
+    bool playerFlag = false;
+    bool computerFlag = false;
+};
 
 // Tile definitions
 extern Piece pieceTypes[];
