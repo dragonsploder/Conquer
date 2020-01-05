@@ -6,6 +6,8 @@
 
 #define KEY_ENTER 10
 
+#define SECONDS_BETWEEN_TURNS 500
+
 #define PLAYER_COLOR COLOR_CYAN
 #define COMPUTER_COLOR COLOR_RED
 
@@ -71,9 +73,11 @@ struct Piece {
 struct Tile {
     int terrain;
     Piece piece;
-    bool playerFlag = false;
-    bool computerFlag = false;
+    char overrideChar = '0';
+    int overrideColor = COLOR_WHITE;
+    int overrideMod = A_BOLD;
 };
+
 
 // Tile definitions
 extern Piece pieceTypes[];
@@ -95,6 +99,6 @@ int irand(int high);
 int igetch();
 
 // Action definitions
-void doCommand();
+void doCommand(int command);
 
 #endif

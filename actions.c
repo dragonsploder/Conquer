@@ -1,26 +1,20 @@
 #include "conquer.h"
 
-Location getLocation(int startY, int startX, bool info){
-    Location curserLocation = {startY, startX};
-    int cmd;
-    while(cmd != 10){
-        printMap();
-        printCurser(curserLocation.y, curserLocation.x);
-        if (info){
-            mvprintw(21,0,"%i          ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
-        }
-        cmd = igetch();
-        if (cmd == KEY_RIGHT && curserLocation.x != MAP_WIDTH - 2){
-            curserLocation.x++;
-        } else if (cmd == KEY_LEFT && curserLocation.x != 1){
-            curserLocation.x--;
-        } else if (cmd == KEY_UP && curserLocation.y != 1){
-            curserLocation.y--;
-        } else if (cmd == KEY_DOWN && curserLocation.y != MAP_HEIGHT - 2){
-            curserLocation.y++;
-        }
+Location curserLocation = {1, 1};
+
+void moveCurser(int command){
+    printCurser(curserLocation.y, curserLocation.x);
+    mvprintw(21,0,"Player: %i      ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
+    mvprintw(22,0,"Computer: %i     ",map[curserLocation.y][curserLocation.x].piece.computerTroops);
+    if (command == KEY_RIGHT && curserLocation.x != MAP_WIDTH - 2){
+        curserLocation.x++;
+    } else if (command == KEY_LEFT && curserLocation.x != 1){
+        curserLocation.x--;
+    } else if (command == KEY_UP && curserLocation.y != 1){
+        curserLocation.y--;
+    } else if (command == KEY_DOWN && curserLocation.y != MAP_HEIGHT - 2){
+        curserLocation.y++;
     }
-    return curserLocation;
 }
 /*
 void makeCity(Location cityLocation){
@@ -30,10 +24,10 @@ void makeCity(Location cityLocation){
     map[cityLocation.y][cityLocation.x].piece.tile = 'O';
 }*/
 
-void info(){
-    getLocation(1, 1, true);
+void info(int command){
+    moveCurser(command);
 }
-
+/*
 void placeCity(){
     Location tempCityLocation = {MAP_START_Y, MAP_START_X};
     bool goodLocation = false;
@@ -53,8 +47,8 @@ void placeCity(){
     map[tempCityLocation.y][tempCityLocation.x].piece = pieceTypes[CITY];
     pline("You made a city.");
 }
-
-void doCommand(){
-    placeCity();
-    info();
+*/
+void doCommand(int command){
+    //placeCity();
+    info(command);
 };

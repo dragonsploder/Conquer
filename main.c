@@ -1,4 +1,5 @@
 #include "conquer.h"
+#include <time.h>
 
 void initColor(){
     // Alow the use of color
@@ -27,6 +28,8 @@ void initNcurses(){
     // Hide cursor
     curs_set(0);
     initColor();
+
+    nodelay(stdscr, true);
 }
 
 void initGame(){
@@ -42,7 +45,7 @@ void justify(){
         if (currentPiece->id == CITY){
             if (currentPiece->owner == PLAYER){
                 currentPiece->newPlayerTroops+=TROOPS_PER_TURN;
-            } else if (map[i][j].piece.owner == COMPUTER){
+            } else if (currentPiece->owner == COMPUTER){
                 currentPiece->newComputerTroops+=TROOPS_PER_TURN;
             }
         }
@@ -81,10 +84,27 @@ void justify(){
     forEveryTile(MAP_HEIGHT, MAP_WIDTH,
         Piece *currentPiece = &map[i][j].piece;
 
+        currentPiece->playerTroops += currentPiece->newPlayerTroops;
+        currentPiece->newPlayerTroops = 0;
+        if (currentPiece->playerTroops > MAX_TROOPS_IN_TILE){
+            currentPiece->playerTroops = MAX_TROOPS_IN_TILE;
+        }
+
+        currentPiece->computerTroops += currentPiece->newComputerTroops;
+        currentPiece->newComputerTroops = 0;
+        if (currentPiece->computerTroops > MAX_TROOPS_IN_TILE){
+            currentPiece->computerTroops = MAX_TROOPS_IN_TILE;
+        }
+    )
+    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
+        Piece *currentPiece = &map[i][j].piece;
+
         if (currentPiece->playerTroops > currentPiece->computerTroops){
             currentPiece->playerTroops -= currentPiece->computerTroops;
-        } else {
+            currentPiece->computerTroops = 0;
+        } else if (currentPiece->computerTroops > currentPiece->playerTroops){
             currentPiece->computerTroops -= currentPiece->playerTroops;
+            currentPiece->playerTroops = 0;
         }
 
         if (currentPiece->id == CITY){
@@ -95,22 +115,6 @@ void justify(){
             }
         }
     )
-    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-        Piece *currentPiece = &map[i][j].piece;
-
-        currentPiece->playerTroops += currentPiece->newPlayerTroops;
-        currentPiece->newPlayerTroops = 0;
-        if (currentPiece->playerTroops > MAX_TROOPS_IN_TILE){
-            currentPiece->playerTroops = MAX_TROOPS_IN_TILE;
-        }
-
-
-        if (currentPiece->computerTroops > MAX_TROOPS_IN_TILE){
-            currentPiece->computerTroops = MAX_TROOPS_IN_TILE;
-        }
-        currentPiece->computerTroops += currentPiece->newComputerTroops;
-        currentPiece->newComputerTroops = 0;
-    )
 }
 
 void gameLoop(){
@@ -120,16 +124,15 @@ void gameLoop(){
     map[y][x].piece.owner = PLAYER;
 
     map[y][x+3].piece = pieceTypes[CITY];
-    map[y][x+3].piece.owner = PLAYER;
-
-    map[y+5][x].piece = pieceTypes[CITY];
-    map[y+5][x].piece.owner = COMPUTER;
-
+    map[y][x+3].piece.owner = COMPUTER;
     while(true){
-        //doCommand();
-        getch();
+        for (int i = 0; i < SECONDS_BETWEEN_TURNS; i += 2){
+            refresh();
+            napms(2);
+            printMap();
+            doCommand(getch());
+        }
         justify();
-        printMap();
     }
 }
 
