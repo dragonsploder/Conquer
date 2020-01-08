@@ -12,12 +12,12 @@ void printMap(){
                 color = terrainTypes[map[i][j].terrain].color;
             } else if (map[i][j].piece.computerTroops >= map[i][j].piece.playerTroops){
                 color = COMPUTER_COLOR;
-                if (map[i][j].piece.computerTroops >= TROOPS_FOR_CITY){
+                if (map[i][j].piece.computerTroops >= gameFlags.computerTroopsForCity){
                     mod = A_BOLD;
                 }
             } else if (map[i][j].piece.playerTroops > map[i][j].piece.computerTroops) {
                 color = PLAYER_COLOR;
-                if (map[i][j].piece.playerTroops >= TROOPS_FOR_CITY){
+                if (map[i][j].piece.playerTroops >= gameFlags.playerTroopsForCity){
                     mod = A_BOLD;
                 }
             }

@@ -13,11 +13,13 @@
 
 #define TROOPS_PER_TURN 50
 
-#define MAX_TROOPS_IN_TILE 1000
+#define MAX_TROOPS_IN_TILE 500
 
-#define TROOPS_FOR_CITY 800
+#define TROOPS_FOR_CITY_MULTIPLIER 1.4
 
-#define MIN_TROOP_MOVE 10
+#define MIN_TROOP_MOVE 0.1
+
+#define MAX_TROOP_MOVE 0.5
 
 /* Misc Deff */
 #define NONE 0
@@ -78,6 +80,13 @@ struct Tile {
     int overrideMod = A_BOLD;
 };
 
+struct GameFlags {
+    int turn;
+    int playerTroopsForCity = 100;
+    int computerTroopsForCity = 100;
+};
+
+extern GameFlags gameFlags;
 
 // Tile definitions
 extern Piece pieceTypes[];
@@ -100,5 +109,8 @@ int igetch();
 
 // Action definitions
 void doCommand(int command);
+
+// troops deff
+void troopActions();
 
 #endif

@@ -49,6 +49,12 @@ void placeCity(){
 }
 */
 void doCommand(int command){
-    //placeCity();
     info(command);
+    if (command == KEY_ENTER && map[curserLocation.y][curserLocation.x].piece.playerTroops >= gameFlags.playerTroopsForCity && map[curserLocation.y][curserLocation.x].piece.id == AIR){
+        int oldTroops = map[curserLocation.y][curserLocation.x].piece.playerTroops;
+        map[curserLocation.y][curserLocation.x].piece = pieceTypes[CITY];
+        map[curserLocation.y][curserLocation.x].piece.owner = PLAYER;
+        map[curserLocation.y][curserLocation.x].piece.playerTroops = oldTroops - gameFlags.playerTroopsForCity;
+        gameFlags.playerTroopsForCity *= TROOPS_FOR_CITY_MULTIPLIER;
+    }
 };

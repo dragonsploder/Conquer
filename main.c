@@ -1,6 +1,8 @@
 #include "conquer.h"
 #include <time.h>
 
+GameFlags gameFlags;
+
 void initColor(){
     // Alow the use of color
     use_default_colors();
@@ -38,101 +40,32 @@ void initGame(){
     printMap();
 }
 
-
-void justify(){
-    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-        Piece *currentPiece = &map[i][j].piece;
-        if (currentPiece->id == CITY){
-            if (currentPiece->owner == PLAYER){
-                currentPiece->newPlayerTroops+=TROOPS_PER_TURN;
-            } else if (currentPiece->owner == COMPUTER){
-                currentPiece->newComputerTroops+=TROOPS_PER_TURN;
-            }
-        }
-    )
-    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-        if (map[i][j].terrain == LAND){
-            Piece *currentPiece = &map[i][j].piece;
-            for (int c = 0; c < 9; c++){
-                if (currentPiece->playerTroops <= MIN_TROOP_MOVE){
-                    break;
-                }
-                int troopsToMove = irand(currentPiece->playerTroops - MIN_TROOP_MOVE) + MIN_TROOP_MOVE;
-                Location cityOffset;
-                cityOffset.y = (irand(3) - 1);
-                cityOffset.x = (irand(3) - 1);
-                if (map[i + cityOffset.y][j + cityOffset.x].terrain == LAND && map[i + cityOffset.y][j + cityOffset.x].piece.playerTroops + troopsToMove <= MAX_TROOPS_IN_TILE){
-                    map[i + cityOffset.y][j + cityOffset.x].piece.newPlayerTroops += troopsToMove;
-                    currentPiece->playerTroops -= troopsToMove;
-                }
-            }
-            for (int c = 0; c < 9; c++){
-                if (currentPiece->computerTroops <= MIN_TROOP_MOVE){
-                    break;
-                }
-                int troopsToMove = irand(currentPiece->computerTroops - MIN_TROOP_MOVE) + MIN_TROOP_MOVE;
-                Location cityOffset;
-                cityOffset.y = (irand(3) - 1);
-                cityOffset.x = (irand(3) - 1);
-                if (map[i + cityOffset.y][j + cityOffset.x].terrain == LAND && map[i + cityOffset.y][j + cityOffset.x].piece.computerTroops + troopsToMove <= MAX_TROOPS_IN_TILE){
-                    map[i + cityOffset.y][j + cityOffset.x].piece.newComputerTroops += troopsToMove;
-                    currentPiece->computerTroops -= troopsToMove;
-                }
-            }
-        }
-    )
-    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-        Piece *currentPiece = &map[i][j].piece;
-
-        currentPiece->playerTroops += currentPiece->newPlayerTroops;
-        currentPiece->newPlayerTroops = 0;
-        if (currentPiece->playerTroops > MAX_TROOPS_IN_TILE){
-            currentPiece->playerTroops = MAX_TROOPS_IN_TILE;
-        }
-
-        currentPiece->computerTroops += currentPiece->newComputerTroops;
-        currentPiece->newComputerTroops = 0;
-        if (currentPiece->computerTroops > MAX_TROOPS_IN_TILE){
-            currentPiece->computerTroops = MAX_TROOPS_IN_TILE;
-        }
-    )
-    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-        Piece *currentPiece = &map[i][j].piece;
-
-        if (currentPiece->playerTroops > currentPiece->computerTroops){
-            currentPiece->playerTroops -= currentPiece->computerTroops;
-            currentPiece->computerTroops = 0;
-        } else if (currentPiece->computerTroops > currentPiece->playerTroops){
-            currentPiece->computerTroops -= currentPiece->playerTroops;
-            currentPiece->playerTroops = 0;
-        }
-
-        if (currentPiece->id == CITY){
-            if (currentPiece->owner == PLAYER && currentPiece->playerTroops < currentPiece->computerTroops){
-                currentPiece->owner = COMPUTER;
-            } else if (currentPiece->owner == COMPUTER && currentPiece->computerTroops < currentPiece->playerTroops){
-                currentPiece->owner = PLAYER;
-            }
-        }
-    )
+void placeRandCity(int owner){
+    int y = 0;
+    int x = 0;
+    do{
+        y = irand(MAP_HEIGHT);
+        x = irand(MAP_WIDTH);
+    } while(map[y][x].terrain != LAND && map[y][x].piece.id != CITY);
+    map[y][x].piece = pieceTypes[CITY];
+    map[y][x].piece.owner = owner;   
 }
 
-void gameLoop(){
-    int y = irand(MAP_HEIGHT);
-    int x = irand(MAP_WIDTH);
-    map[y][x].piece = pieceTypes[CITY];
-    map[y][x].piece.owner = PLAYER;
 
-    map[y][x+3].piece = pieceTypes[CITY];
-    map[y][x+3].piece.owner = COMPUTER;
+void gameLoop(){
+    placeRandCity(PLAYER);
+    placeRandCity(COMPUTER);
+
+    gameFlags.turn = 0;
     while(true){
+        gameFlags.turn++;
         for (int i = 0; i < SECONDS_BETWEEN_TURNS; i += 2){
             refresh();
             napms(2);
             printMap();
             doCommand(getch());
         }
-        justify();
+        troopActions();
     }
 }
 
