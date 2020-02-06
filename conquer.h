@@ -23,10 +23,15 @@
 
 /* Troop Movment */
 #define EXPLORE 1
+#define EXPLORE_KEY 101 // e
 #define FORTIFY 2
+#define FORTIFY_KEY 102 // f
 #define DEVELOP 3
+#define DEVELOP_KEY 118 // v
 #define ATTACK 4
+#define ATTACK_KEY 116 // t
 #define DEFEND 5
+#define DEFEND_KEY 110 // n
 
 /* Misc Deff */
 #define NONE 0
@@ -136,9 +141,11 @@ void initrand();
 int irand(int high);
 int igetch();
 void bubblePath(Location originCity);
+void printCurrentMoment();
 
 // Action definitions
 void doCommand(int command);
+void placeCity(int y, int x, int owner);
 
 // troops deff
 void troopActions();

@@ -75,102 +75,21 @@ void bubblePath(Location originCity){
     
 }
 
-/*
-struct Node {
-    int y;
-    int x;
-    int fCost;
-    int gCost;
-    bool open;
-    int parentY;
-    int parentX;
+struct fancyWord {
+    char word[20];
+    int underlineLocation;
+    bool bold = false;
 };
 
-void updateFCost(int i, int j, Node nodes[MAP_HEIGHT][MAP_WIDTH], Location start, Location goal, Node current){
-    if (map[i+1][j+1].terrain == LAND && nodes[i][j].open){
-        int newGCost = current.gCost + 1;
-        int newFCost = newGCost + (abs(nodes[i][j].y - goal.y) + abs(nodes[i][j].x - goal.x));
-        printf("Y:%i,X:%i fcost%i\n", i, j, newFCost);
-        if (newGCost < nodes[i][j].gCost){
-            nodes[i][j].gCost = newGCost;
-            nodes[i][j].fCost = newFCost;
-            nodes[i][j].parentY = current.y;
-            nodes[i][j].parentX = current.x;
-            nodes[i][j].open = true;
-        }
-    }
+struct fancyWord currentTroopMovement[10] = {
+    {"Unused ",0},
+    {"Explore",0},
+    {"Fortify",0},
+    {"Develop",2},
+    {"Attack ",1},
+    {"Defend ",4}
+};
+
+void printCurrentMoment(){
+    mvprintw(21,20, "%s", currentTroopMovement[gameFlags.playerTroopMovment].word);
 }
-
-
-Location AStar(Location start, Location goal, bool overLand){
-
-    Node nodes[MAP_HEIGHT][MAP_WIDTH];
-
-    forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-        nodes[i][j].y = i;
-        nodes[i][j].x = j;
-        nodes[i][j].fCost = 1000;
-        nodes[i][j].gCost = 1000;
-        nodes[i][j].open = true;
-    );
-
-    //nodes[start.y][start.x] = {start.y, start.x, (abs(start.y - goal.y) + abs(start.x - goal.x)), false};
-    nodes[start.y][start.x] = {start.y, start.x, 0, 0, false};
-
-    //Node *current = &nodes[start.y][start.x];
-    Node current = nodes[start.y][start.x];
-
-
-    while (true){
-        //printf("y:%i\nx:%i", current.y, current.x);
-
-        //printf("Next\n");
-
-
-        if (current.y == goal.y && current.x == goal.x){
-            while(true){
-                printf("Stuck\n");
-                current = nodes[current.parentY][current.parentX];
-                if (current.parentY == start.y && current.parentX == start.x){
-                    return (Location) {current.y, current.x};
-                }
-            }
-        }
-
-        int i = current.y;
-        int j = current.x;
-        //printf("currentY:%i X:%i\n", i, j);
-
-        updateFCost(i-1,j-1,nodes,start,goal,current);
-        updateFCost(i-1,j,nodes,start,goal,current);
-        updateFCost(i-1,j+1,nodes,start,goal,current);
-        updateFCost(i,j-1,nodes,start,goal,current);
-        updateFCost(i,j+1,nodes,start,goal,current);
-        updateFCost(i+1,j-1,nodes,start,goal,current);
-        updateFCost(i+1,j,nodes,start,goal,current);
-        updateFCost(i+1,j+1,nodes,start,goal,current);
-
-
-
-        
-        forEachNeighbor(i, j, 
-           updateFCost(i,j,nodes,start,goal,current);
-        );
-
-        Node tempNode;
-        tempNode.fCost = 1000;
-        forEveryTile(MAP_HEIGHT, MAP_WIDTH,
-            //printf("node[%i][%i]:%i\n", i, j, nodes[i][j].fCost);
-            if (nodes[i][j].open && tempNode.fCost > nodes[i][j].fCost){
-                tempNode.y = i;
-                tempNode.x = j;
-                tempNode.fCost = nodes[i][j].fCost;
-            }
-        );
-
-        current = nodes[tempNode.y][tempNode.x];
-        current.open = false;
-
-    }
-
-}*/

@@ -48,9 +48,7 @@ void placeRandCity(int owner){
         y = irand(MAP_HEIGHT);
         x = irand(MAP_WIDTH);
     } while(map[y][x].terrain != LAND && map[y][x].piece.id != CITY);
-    map[y][x].piece = pieceTypes[CITY];
-    map[y][x].piece.owner = owner;   
-    bubblePath((Location) {y, x});
+    placeCity(y, x,owner);
 }
 
 
@@ -68,6 +66,7 @@ void gameLoop(){
             doCommand(getch());
         }
         troopActions();
+        printCurrentMoment();
     }
 }
 

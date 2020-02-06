@@ -2,13 +2,15 @@
 
 Location curserLocation = {1, 1};
 
-void moveCurser(int command){
+void moveCurser(int command, bool printInfo){
     printCurser(curserLocation.y, curserLocation.x);
-    //mvprintw(21,0,"Player: %i      ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
-    //mvprintw(22,0,"Computer: %i     ",map[curserLocation.y][curserLocation.x].piece.computerTroops);
-    mvprintw(21,0,"Y:%i  X:%i ", curserLocation.y, curserLocation.x);
-    mvprintw(22,0,"PY:%i  PX:%i ", map[curserLocation.y][curserLocation.x].paths[1].previousY, map[curserLocation.y][curserLocation.x].paths[1].previousX);
-    mvprintw(23,0,"Steps:%i", map[curserLocation.y][curserLocation.x].paths[1].steps);
+    if (printInfo){
+        mvprintw(21,0,"Player: %i      ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
+        mvprintw(22,0,"Computer: %i     ",map[curserLocation.y][curserLocation.x].piece.computerTroops);
+        //mvprintw(21,0,"Y:%i  X:%i ", curserLocation.y, curserLocation.x);
+        //mvprintw(22,0,"PY:%i  PX:%i ", map[curserLocation.y][curserLocation.x].paths[1].previousY, map[curserLocation.y][curserLocation.x].paths[1].previousX);
+        //mvprintw(23,0,"Steps:%i", map[curserLocation.y][curserLocation.x].paths[1].steps);
+    }
     if (command == KEY_RIGHT && curserLocation.x != MAP_WIDTH - 2){
         curserLocation.x++;
     } else if (command == KEY_LEFT && curserLocation.x != 1){
@@ -27,8 +29,14 @@ void makeCity(Location cityLocation){
     map[cityLocation.y][cityLocation.x].piece.tile = 'O';
 }*/
 
+void placeCity(int y, int x, int owner){
+    map[y][x].piece = pieceTypes[CITY];
+    map[y][x].piece.owner = owner;   
+    bubblePath((Location) {y, x});
+}
+
 void info(int command){
-    moveCurser(command);
+    moveCurser(command, true);
 }
 /*
 void placeCity(){
@@ -55,9 +63,18 @@ void doCommand(int command){
     info(command);
     if (command == KEY_ENTER && map[curserLocation.y][curserLocation.x].piece.playerTroops >= gameFlags.playerTroopsForCity && map[curserLocation.y][curserLocation.x].piece.id == AIR){
         int oldTroops = map[curserLocation.y][curserLocation.x].piece.playerTroops;
-        map[curserLocation.y][curserLocation.x].piece = pieceTypes[CITY];
-        map[curserLocation.y][curserLocation.x].piece.owner = PLAYER;
+        placeCity(curserLocation.y, curserLocation.x, PLAYER);
         map[curserLocation.y][curserLocation.x].piece.playerTroops = oldTroops - gameFlags.playerTroopsForCity;
         gameFlags.playerTroopsForCity *= TROOPS_FOR_CITY_MULTIPLIER;
-    }
+    } else if (command == EXPLORE_KEY){
+        gameFlags.playerTroopMovment = EXPLORE;
+    } else if (command == FORTIFY_KEY){
+        gameFlags.playerTroopMovment = FORTIFY;
+    } else if (command == DEVELOP_KEY){
+        gameFlags.playerTroopMovment = DEVELOP;
+    } else if (command == ATTACK_KEY){
+        gameFlags.playerTroopMovment = ATTACK;
+    } else if (command == DEFEND_KEY){
+        gameFlags.playerTroopMovment = DEFEND;
+    } 
 };
