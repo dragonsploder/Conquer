@@ -4,8 +4,11 @@ Location curserLocation = {1, 1};
 
 void moveCurser(int command){
     printCurser(curserLocation.y, curserLocation.x);
-    mvprintw(21,0,"Player: %i      ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
-    mvprintw(22,0,"Computer: %i     ",map[curserLocation.y][curserLocation.x].piece.computerTroops);
+    //mvprintw(21,0,"Player: %i      ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
+    //mvprintw(22,0,"Computer: %i     ",map[curserLocation.y][curserLocation.x].piece.computerTroops);
+    mvprintw(21,0,"Y:%i  X:%i ", curserLocation.y, curserLocation.x);
+    mvprintw(22,0,"PY:%i  PX:%i ", map[curserLocation.y][curserLocation.x].paths[1].previousY, map[curserLocation.y][curserLocation.x].paths[1].previousX);
+    mvprintw(23,0,"Steps:%i", map[curserLocation.y][curserLocation.x].paths[1].steps);
     if (command == KEY_RIGHT && curserLocation.x != MAP_WIDTH - 2){
         curserLocation.x++;
     } else if (command == KEY_LEFT && curserLocation.x != 1){

@@ -40,6 +40,7 @@ void initGame(){
     printMap();
 }
 
+
 void placeRandCity(int owner){
     int y = 0;
     int x = 0;
@@ -49,6 +50,7 @@ void placeRandCity(int owner){
     } while(map[y][x].terrain != LAND && map[y][x].piece.id != CITY);
     map[y][x].piece = pieceTypes[CITY];
     map[y][x].piece.owner = owner;   
+    bubblePath((Location) {y, x});
 }
 
 
@@ -73,6 +75,7 @@ int main(){
     initNcurses();
     
     initGame();
+
     gameLoop();
     igetch();
     

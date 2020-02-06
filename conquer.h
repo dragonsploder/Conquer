@@ -21,6 +21,13 @@
 
 #define MAX_TROOP_MOVE 0.5
 
+/* Troop Movment */
+#define EXPLORE 1
+#define FORTIFY 2
+#define DEVELOP 3
+#define ATTACK 4
+#define DEFEND 5
+
 /* Misc Deff */
 #define NONE 0
 #define PLAYER 1
@@ -51,6 +58,15 @@
 // Macro to do x to every tile
 #define forEveryTile(height, width, x) for(int i = 0; i < height; i++){for(int j = 0; j < width; j++){x}}
 
+#define forEachNeighbor(y, x, function) y--;x--;function;\
+                                            x++;function;\
+                                            x++;function;\
+                                            y++;function;\
+                                            y++;function;\
+                                            x--;function;\
+                                            x--;function;\
+                                            y++;function;
+
 struct Location {
     int y;
     int x;
@@ -72,18 +88,31 @@ struct Piece {
     int newComputerTroops = 0;
 };
 
+struct Path{
+    int y;
+    int x;
+    int previousY;
+    int previousX;
+    int steps;
+    int owner;
+};
+
 struct Tile {
     int terrain;
     Piece piece;
     char overrideChar = '0';
     int overrideColor = COLOR_WHITE;
     int overrideMod = A_BOLD;
+    struct Path paths[20];
+    int pathAmount = 0;
+    bool open;
 };
 
 struct GameFlags {
     int turn;
     int playerTroopsForCity = 100;
     int computerTroopsForCity = 100;
+    int playerTroopMovment = EXPLORE;
 };
 
 extern GameFlags gameFlags;
@@ -106,6 +135,7 @@ void pline(const char string[]);
 void initrand();
 int irand(int high);
 int igetch();
+void bubblePath(Location originCity);
 
 // Action definitions
 void doCommand(int command);
