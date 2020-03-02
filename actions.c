@@ -7,6 +7,8 @@ void moveCurser(int command, bool printInfo){
     if (printInfo){
         mvprintw(21,0,"Player: %i      ",map[curserLocation.y][curserLocation.x].piece.playerTroops);
         mvprintw(22,0,"Computer: %i     ",map[curserLocation.y][curserLocation.x].piece.computerTroops);
+        mvprintw(23,0,"turnSinceBoat: %i     ",map[curserLocation.y][curserLocation.x].turnSinceBoat);
+        //mvprintw(23,0,"numberOfLandTiles: %i     ",map[curserLocation.y][curserLocation.x].piece.numberOfLandTiles);
         //mvprintw(21,0,"Y:%i  X:%i ", curserLocation.y, curserLocation.x);
         //mvprintw(22,0,"PY:%i  PX:%i ", map[curserLocation.y][curserLocation.x].paths[1].previousY, map[curserLocation.y][curserLocation.x].paths[1].previousX);
         //mvprintw(23,0,"Steps:%i", map[curserLocation.y][curserLocation.x].paths[1].steps);
@@ -29,36 +31,37 @@ void makeCity(Location cityLocation){
     map[cityLocation.y][cityLocation.x].piece.tile = 'O';
 }*/
 
+int countTileTypes(int y, int x, int terrain){
+    int count = 0;
+    if (map[y-1][x].terrain == terrain) count++;
+    if (map[y][x].terrain == terrain) count++;
+    if (map[y+1][x].terrain == terrain) count++;
+    if (map[y-1][x].terrain == terrain) count++;
+    if (map[y+1][x].terrain == terrain) count++;
+    if (map[y-1][x].terrain == terrain) count++;
+    if (map[y][x].terrain == terrain) count++;
+    if (map[y+1][x].terrain == terrain) count++;
+    return count;
+}
+
 void placeCity(int y, int x, int owner){
     map[y][x].piece = pieceTypes[CITY];
-    map[y][x].piece.owner = owner;   
+    map[y][x].piece.owner = owner; 
+
+    map[y][x].piece.numberOfLandTiles = countTileTypes(y, x, LAND);
+    map[y][x].piece.numberOfWaterTiles = countTileTypes(y, x, WATER);
+
+    cities[numberCities] = map[y][x].piece;
+    map[y][x].piece.cityLocation = numberCities;
+    numberCities++;
+
     bubblePath((Location) {y, x});
 }
 
 void info(int command){
     moveCurser(command, true);
 }
-/*
-void placeCity(){
-    Location tempCityLocation = {MAP_START_Y, MAP_START_X};
-    bool goodLocation = false;
-    do {
-        tempCityLocation = getLocation(tempCityLocation.y, tempCityLocation.x, false);
-        if (map[tempCityLocation.y][tempCityLocation.x].piece.id == AIR){
-            if (terrainTypes[map[tempCityLocation.y][tempCityLocation.x].terrain].id == LAND){
-                goodLocation = true;
-            } else {
-                pline("You can't build a city here.");
-            }
-        } else {
-            pline("There's already something here.");
-        }
-    } while (!goodLocation);
-    //makeCity(tempCityLocation);
-    map[tempCityLocation.y][tempCityLocation.x].piece = pieceTypes[CITY];
-    pline("You made a city.");
-}
-*/
+
 void doCommand(int command){
     info(command);
     if (command == KEY_ENTER && map[curserLocation.y][curserLocation.x].piece.playerTroops >= gameFlags.playerTroopsForCity && map[curserLocation.y][curserLocation.x].piece.id == AIR){

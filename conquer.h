@@ -11,7 +11,7 @@
 #define PLAYER_COLOR COLOR_CYAN
 #define COMPUTER_COLOR COLOR_RED
 
-#define TROOPS_PER_TURN 50
+#define TROOPS_PER_TILE_PER_TURN 10
 
 #define MAX_TROOPS_IN_TILE 500
 
@@ -20,6 +20,8 @@
 #define MIN_TROOP_MOVE 0.1
 
 #define MAX_TROOP_MOVE 0.5
+
+#define MAX_CITIES 100
 
 /* Troop Movment */
 #define EXPLORE 1
@@ -33,7 +35,15 @@
 #define DEFEND 5
 #define DEFEND_KEY 110 // n
 
-/* Misc Deff */
+/* Boat stuff */
+#define BOAT_PROB_PER_TILE 0.1//0.01
+#define MAX_BOAT_CAPACITY 200
+#define MIN_BOAT_CAPACITY_TO_MOVE 100
+#define BOAT_TOLERANCE 0.1
+#define TROOP_LEAVE_BOAT 0.3
+#define MIN_BOAT_MOVES_FOR_TROOP_LEAVE 20
+
+/* Owner Deff */
 #define NONE 0
 #define PLAYER 1
 #define COMPUTER 2
@@ -45,6 +55,7 @@
 /* Piece Deff */
 #define AIR 0
 #define CITY 1
+#define BOAT 2
 
 /* Display Deff */
 #define MAP_START_Y 1
@@ -62,7 +73,7 @@
 
 // Macro to do x to every tile
 #define forEveryTile(height, width, x) for(int i = 0; i < height; i++){for(int j = 0; j < width; j++){x}}
-
+/*
 #define forEachNeighbor(y, x, function) y--;x--;function;\
                                             x++;function;\
                                             x++;function;\
@@ -70,7 +81,7 @@
                                             y++;function;\
                                             x--;function;\
                                             x--;function;\
-                                            y++;function;
+                                            y++;function;*/
 
 struct Location {
     int y;
@@ -91,6 +102,14 @@ struct Piece {
     int newPlayerTroops = 0;
     int computerTroops = 0;
     int newComputerTroops = 0;
+    /* City stuff */
+    int numberOfLandTiles;
+    int numberOfWaterTiles;
+    int cityLocation;
+    /* Boat stuff */
+    bool moveFlag;
+    bool boatTroopOnOffFlag = true;
+    int lastDropOff;
 };
 
 struct Path{
@@ -100,6 +119,7 @@ struct Path{
     int previousX;
     int steps;
     int owner;
+    int city;
 };
 
 struct Tile {
@@ -108,9 +128,12 @@ struct Tile {
     char overrideChar = '0';
     int overrideColor = COLOR_WHITE;
     int overrideMod = A_BOLD;
+    /* Troop Movement */
     struct Path paths[20];
     int pathAmount = 0;
     bool open;
+    /* Boat movment */
+    int turnSinceBoat = -1;
 };
 
 struct GameFlags {
@@ -121,6 +144,9 @@ struct GameFlags {
 };
 
 extern GameFlags gameFlags;
+
+extern Piece cities[];
+extern int numberCities;
 
 // Tile definitions
 extern Piece pieceTypes[];
@@ -141,6 +167,7 @@ void initrand();
 int irand(int high);
 int igetch();
 void bubblePath(Location originCity);
+void updateBubblePath(Piece *originCity);
 void printCurrentMoment();
 
 // Action definitions
@@ -149,5 +176,8 @@ void placeCity(int y, int x, int owner);
 
 // troops deff
 void troopActions();
+
+// boat deff
+void boatActions();
 
 #endif

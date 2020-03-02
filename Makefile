@@ -1,6 +1,6 @@
 CFLAGS = -lncurses -w
 
-SRCS=   main.c map.c display.c misc.c tile.c actions.c troops.c
+SRCS=   main.c map.c display.c misc.c tile.c actions.c troops.c boats.c
 
 conquer:
 	g++ $(SRCS) $(CFLAGS) -o conquer

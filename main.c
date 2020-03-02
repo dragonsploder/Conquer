@@ -2,6 +2,8 @@
 #include <time.h>
 
 GameFlags gameFlags;
+Piece cities[MAX_CITIES];
+int numberCities = 0;
 
 void initColor(){
     // Alow the use of color
@@ -54,7 +56,7 @@ void placeRandCity(int owner){
 
 void gameLoop(){
     placeRandCity(PLAYER);
-    placeRandCity(COMPUTER);
+    //placeRandCity(COMPUTER);
 
     gameFlags.turn = 0;
     while(true){
@@ -66,6 +68,7 @@ void gameLoop(){
             doCommand(getch());
         }
         troopActions();
+        boatActions();
         printCurrentMoment();
     }
 }

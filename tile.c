@@ -2,7 +2,8 @@
 
 Piece pieceTypes[] = {
     {AIR, ' ', NONE},
-    {CITY, 'O', NONE}
+    {CITY, 'O', NONE},
+    {BOAT, '=', NONE}
 };
 
 Terrain terrainTypes[] = {
